@@ -109,12 +109,13 @@ const HomePage: React.FC = () => {
     }
   };
   const handlePrevPage = (): void => {
-    const totalNumberOfPages: number = Math.ceil(
-      currentItems.length / itemsPerPage
-    );
-    if (currentPage >= totalNumberOfPages && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    // const totalNumberOfPages: number = Math.ceil(
+    //   currentItems.length / itemsPerPage
+    // );
+    // if (currentPage >= totalNumberOfPages && currentPage > 1) {
+    //   setCurrentPage(currentPage - 1);
+    // }
+    setCurrentPage(currentPage - 1);
   };
 
   useEffect(() => {
@@ -198,13 +199,18 @@ const HomePage: React.FC = () => {
         >
           Next page
         </Button>
-        <Button
-          handleClick={handlePrevPage}
-          manageModal={() => {}}
-          handleRemove={() => {}}
-        >
-          Previous page
-        </Button>
+
+        {currentPage > 1 ? (
+          <Button
+            handleClick={handlePrevPage}
+            manageModal={() => {}}
+            handleRemove={() => {}}
+          >
+            Previous page
+          </Button>
+        ) : (
+          ""
+        )}
       </div>
       {overlay.removeModal && overlay.overlay ? (
         <Modal
