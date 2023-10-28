@@ -93,6 +93,30 @@ const HomePage: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const itemsPerPage: number = 5;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const startIndex: number = (currentPage - 1) * itemsPerPage;
+  const endIndex: number = startIndex + itemsPerPage;
+  const currentItems: User[] = usersData.slice(startIndex, endIndex);
+
+  const handleNextPage = (): void => {
+    const totalNumberOfPages: number = Math.ceil(
+      currentItems.length / itemsPerPage
+    );
+    if (currentPage <= totalNumberOfPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const handlePrevPage = (): void => {
+    const totalNumberOfPages: number = Math.ceil(
+      currentItems.length / itemsPerPage
+    );
+    if (currentPage >= totalNumberOfPages && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true);
     const getUsers = async () => {
@@ -114,13 +138,14 @@ const HomePage: React.FC = () => {
   }, [overlay.index]);
 
   if (isLoading) return <Spinner />;
+
   return (
     <>
       <Overlay handleClick={removeOverlay} />
       <h1 className="ml-52 font-bold text-3xl my-3 text-stone-800">
         👩🏻‍🤝‍🧑🏻🪑 Users Table
       </h1>
-      <table className="border-separate">
+      <table className="border-separate mb-3">
         <thead>
           <tr>
             <th>ID</th>
@@ -131,7 +156,7 @@ const HomePage: React.FC = () => {
           </tr>
         </thead>
         <tbody className=" [&>*:nth-child(odd)]:bg-stone-300 table-auto border-separate  [&>*:nth-child(even)]:bg-yellow-200 ">
-          {usersData.map((user, index) => (
+          {currentItems.map((user, index) => (
             <tr key={index} className="[&>*]:px-3 [&>*]:py-5">
               <td>{user.id}</td>
               <td
@@ -165,6 +190,22 @@ const HomePage: React.FC = () => {
           ))}
         </tbody>
       </table>
+      <div className="space-x-[510px]">
+        <Button
+          handleClick={handleNextPage}
+          manageModal={() => {}}
+          handleRemove={() => {}}
+        >
+          Next page
+        </Button>
+        <Button
+          handleClick={handlePrevPage}
+          manageModal={() => {}}
+          handleRemove={() => {}}
+        >
+          Previous page
+        </Button>
+      </div>
       {overlay.removeModal && overlay.overlay ? (
         <Modal
           handleClick={manageOverlay}
