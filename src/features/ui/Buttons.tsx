@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 interface ButtonProps {
   children: React.ReactNode;
   handleRemove: () => void;
@@ -5,15 +7,15 @@ interface ButtonProps {
   manageModal: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const Buttons: React.FC<ButtonProps> = ({
   children,
   handleRemove,
   handleClick,
   manageModal,
 }) => {
   return (
-    <button
-      className="mr-5 p-1 rounded-lg hover:bg-yellow-300 hover:ring hover:ring-yellow-100 hover:border-offset-1 "
+    <Button
+      // className="mr-5 p-1 rounded-lg hover:bg-yellow-300 hover:ring hover:ring-yellow-100 hover:border-offset-1 "
       onClick={() => {
         handleClick();
         manageModal();
@@ -21,8 +23,8 @@ const Button: React.FC<ButtonProps> = ({
       }}
     >
       {children}
-    </button>
+    </Button>
   );
 };
 
-export default Button;
+export default Buttons;

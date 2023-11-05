@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import Button from "../ui/Button";
+import Buttons from "../ui/Buttons";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../ui/Spinner";
 import Overlay from "../ui/Overlay";
 import { OverlayContext } from "../contexts/OverlayContext";
 import Modal from "../modals/RemoveModal";
 import { UserContext } from "../contexts/UserContext";
-
+import { Button } from "@/components/ui/button";
 interface User {
   id: number;
   name: string;
@@ -19,6 +19,7 @@ interface User {
 const API_URL = "https://jsonplaceholder.typicode.com/users";
 
 const HomePage: React.FC = () => {
+  console.time("loop");
   const overlay = useContext(OverlayContext);
   const details = useContext(UserContext);
   const [usersData, setUsersData] = useState<User[]>([]);
@@ -139,11 +140,11 @@ const HomePage: React.FC = () => {
   }, [overlay.index]);
 
   if (isLoading) return <Spinner />;
-
+  console.timeEnd("loop");
   return (
     <>
       <Overlay handleClick={removeOverlay} />
-      <h1 className="ml-52 font-bold text-3xl my-3 text-stone-800">
+      <h1 className="scroll-m-20 tracking-tight ml-52 font-bold text-5xl my-6 ">
         👩🏻‍🤝‍🧑🏻🪑 Users Table
       </h1>
       <table className="border-separate mb-3">
@@ -156,7 +157,7 @@ const HomePage: React.FC = () => {
             <th>Settings</th>
           </tr>
         </thead>
-        <tbody className=" [&>*:nth-child(odd)]:bg-stone-300 table-auto border-separate  [&>*:nth-child(even)]:bg-yellow-200 ">
+        <tbody className=" [&>*:nth-child(odd)]:bg-slate-400 table-auto border-separate leading-7  [&>*:nth-child(even)]:bg-slate-200 ">
           {currentItems.map((user, index) => (
             <tr key={index} className="[&>*]:px-3 [&>*]:py-5">
               <td>{user.id}</td>
@@ -171,43 +172,45 @@ const HomePage: React.FC = () => {
                 <p>{user.address.city}</p>
               </td>
               <td>
-                <Button
-                  handleRemove={() => overlay.setIndex(index)}
-                  handleClick={manageOverlay}
-                  manageModal={manageRemoveModal}
-                >
-                  Remove
-                </Button>
+                <div className="space-x-1">
+                  <Buttons
+                    handleRemove={() => overlay.setIndex(index)}
+                    handleClick={manageOverlay}
+                    manageModal={manageRemoveModal}
+                  >
+                    Remove
+                  </Buttons>
 
-                <Button
-                  handleClick={manageOverlay}
-                  manageModal={manageEditModal}
-                  handleRemove={() => overlay.setIndex(index)}
-                >
-                  Edit
-                </Button>
+                  <Buttons
+                    handleClick={manageOverlay}
+                    manageModal={manageEditModal}
+                    handleRemove={() => overlay.setIndex(index)}
+                  >
+                    Edit
+                  </Buttons>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="space-x-[510px]">
-        <Button
+        <Buttons
           handleClick={handleNextPage}
           manageModal={() => {}}
           handleRemove={() => {}}
         >
           Next page
-        </Button>
+        </Buttons>
 
         {currentPage > 1 ? (
-          <Button
+          <Buttons
             handleClick={handlePrevPage}
             manageModal={() => {}}
             handleRemove={() => {}}
           >
             Previous page
-          </Button>
+          </Buttons>
         ) : (
           ""
         )}
@@ -230,7 +233,7 @@ const HomePage: React.FC = () => {
           <label className="inline">
             Edit full name:
             <input
-              className="bg-yellow-200 rounded-sm pl-2 mt-2 py-1"
+              className="bg-slate-200 rounded-sm pl-2 mt-2 py-1"
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
@@ -239,7 +242,7 @@ const HomePage: React.FC = () => {
           <label>
             Edit email:
             <input
-              className="bg-yellow-200 rounded-sm pl-2 mt-2 py-1"
+              className="bg-slate-200 rounded-sm pl-2 mt-2 py-1"
               type="email"
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
@@ -248,18 +251,18 @@ const HomePage: React.FC = () => {
           <label>
             Edit city of residence:
             <input
-              className="bg-yellow-200 rounded-sm pl-2 mt-2 py-1"
+              className="bg-slate-200 rounded-sm pl-2 mt-2 py-1"
               type="text"
               value={userCity}
               onChange={(e) => setUserCity(e.target.value)}
             />
           </label>
-          <button
+          <Button
             onClick={() => handleSubmit(overlay.index)}
-            className="mr-5 p-1 rounded-lg hover:bg-yellow-300 hover:ring hover:ring-yellow-100 hover:border-offset-1 "
+            className="mr-5 p-1 rounded-lg hover:bg-slate-600 hover:ring hover:ring-slate-400 hover:border-offset-1 "
           >
             Save
-          </button>
+          </Button>
         </div>
       ) : (
         ""

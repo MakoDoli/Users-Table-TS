@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "../ui/Button";
+import Button from "../ui/Buttons";
 import Spinner from "../ui/Spinner";
 import { UserContext } from "../contexts/UserContext";
 
