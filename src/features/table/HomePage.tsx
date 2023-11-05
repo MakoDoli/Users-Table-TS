@@ -19,7 +19,6 @@ interface User {
 const API_URL = "https://jsonplaceholder.typicode.com/users";
 
 const HomePage: React.FC = () => {
-  console.time("loop");
   const overlay = useContext(OverlayContext);
   const details = useContext(UserContext);
   const [usersData, setUsersData] = useState<User[]>([]);
@@ -140,7 +139,7 @@ const HomePage: React.FC = () => {
   }, [overlay.index]);
 
   if (isLoading) return <Spinner />;
-  console.timeEnd("loop");
+
   return (
     <>
       <Overlay handleClick={removeOverlay} />
@@ -174,7 +173,10 @@ const HomePage: React.FC = () => {
               <td>
                 <div className="space-x-1">
                   <Buttons
-                    handleRemove={() => overlay.setIndex(index)}
+                    handleRemove={() => {
+                      if (currentPage === 1) overlay.setIndex(index);
+                      if (currentPage === 2) overlay.setIndex(index + 5);
+                    }}
                     handleClick={manageOverlay}
                     manageModal={manageRemoveModal}
                   >
@@ -184,7 +186,10 @@ const HomePage: React.FC = () => {
                   <Buttons
                     handleClick={manageOverlay}
                     manageModal={manageEditModal}
-                    handleRemove={() => overlay.setIndex(index)}
+                    handleRemove={() => {
+                      if (currentPage === 1) overlay.setIndex(index);
+                      if (currentPage === 2) overlay.setIndex(index + 5);
+                    }}
                   >
                     Edit
                   </Buttons>
