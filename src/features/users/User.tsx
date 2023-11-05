@@ -52,7 +52,7 @@ const User: React.FC = () => {
   if (isLoading || !user) return <Spinner />;
 
   return (
-    <div className="m-5 rounded-md bg-yellow-200 p-3 w-[480px] ">
+    <div className="m-5 rounded-md bg-stone-200 p-3 w-[480px] ">
       <h2 className="font-bold mb-2"> User Info</h2>
       <div className="flex space-x-8 ">
         <div className="font-semibold">
