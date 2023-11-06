@@ -68,7 +68,14 @@ const User: React.FC = () => {
           <p>{userAddress}</p>
           <p>{details.edited ? details.userCity : city}</p>
           <div className="flex justify-end mt-4">
-            <Button onClick={() => navigate("/")}>Back to table</Button>
+            <Button
+              onClick={() => {
+                details.setEdited(false);
+                navigate("/");
+              }}
+            >
+              Back to table
+            </Button>
           </div>
         </div>
       </div>

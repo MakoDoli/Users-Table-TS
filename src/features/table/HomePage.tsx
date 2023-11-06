@@ -24,8 +24,8 @@ const HomePage: React.FC = () => {
 
   const [usersData, setUsersData] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  //const [userName, setUserName] = useState<string>("");
-  const [userEmail, setUserEmail] = useState<string>("");
+  // const [userName, setUserName] = useState<string>("");
+  // const [userEmail, setUserEmail] = useState<string>("");
   const [userCity, setUserCity] = useState<string>("");
 
   // ------- Pagination -----------------
@@ -74,20 +74,36 @@ const HomePage: React.FC = () => {
     overlay.setEditModal(!overlay.editModal);
   };
 
+  // ----- Initial user stats for Edit Modal--
+
+  const initialUser = async (id: number) => {
+    const URL_USER = `${API_URL}/${id}`;
+    console.log(URL_USER);
+    try {
+      const res = await fetch(URL_USER);
+      const data = await res.json();
+      details.setUserName(data.name);
+      details.setUserEmail(data.email);
+      details.setUserCity(data.address.city);
+    } catch (error) {
+      console.error("Failed to fetch user");
+    }
+  };
+
   // -----Edit user --------------
 
   const handleSubmit = async (index: number) => {
     const updatedUsers: User[] = await Promise.all(
-      currentItems.map(async (user) => {
+      usersData.map(async (user) => {
         if (user.name === currentItems[index].name) {
           const updatedAddress = user.address
-            ? { ...user.address, city: userCity }
+            ? { ...user.address, city: details.userCity }
             : { city: userCity };
 
           const updatedUser: User = {
             ...user,
             name: details.userName,
-            email: userEmail,
+            email: details.userEmail,
             address: updatedAddress,
           };
 
@@ -147,6 +163,8 @@ const HomePage: React.FC = () => {
   if (isLoading) return <Spinner />;
   console.log(currentItems);
   console.log(overlay.index);
+  console.log(details.edited);
+
   return (
     <>
       <Overlay handleClick={removeOverlay} />
@@ -194,6 +212,7 @@ const HomePage: React.FC = () => {
                     handleRemove={() => {
                       if (currentPage === 1) overlay.setIndex(index);
                       if (currentPage === 2) overlay.setIndex(index + 5);
+                      initialUser(user.id);
                     }}
                   >
                     Edit
@@ -241,8 +260,8 @@ const HomePage: React.FC = () => {
             <input
               className="bg-slate-200 rounded-sm pl-2 mt-2 py-1"
               type="email"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
+              value={details.userEmail}
+              onChange={(e) => details.setUserEmail(e.target.value)}
             />
           </label>
           <label>
@@ -250,8 +269,8 @@ const HomePage: React.FC = () => {
             <input
               className="bg-slate-200 rounded-sm pl-2 mt-2 py-1"
               type="text"
-              value={userCity}
-              onChange={(e) => setUserCity(e.target.value)}
+              value={details.userCity}
+              onChange={(e) => details.setUserCity(e.target.value)}
             />
           </label>
           <Button
