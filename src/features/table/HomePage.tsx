@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [userName, setUserName] = useState<string>("");
   // const [userEmail, setUserEmail] = useState<string>("");
-  const [userCity, setUserCity] = useState<string>("");
+  //const [userCity, setUserCity] = useState<string>("");
 
   // ------- Pagination -----------------
 
@@ -90,7 +90,7 @@ const HomePage: React.FC = () => {
         if (user.name === currentItems[arrindex].name) {
           const updatedAddress = user.address
             ? { ...user.address, city: details.userCity }
-            : { city: userCity };
+            : { city: details.userCity };
 
           const updatedUser: User = {
             ...user,
