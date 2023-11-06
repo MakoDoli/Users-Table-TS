@@ -46,12 +46,6 @@ const HomePage: React.FC = () => {
     }
   };
   const handlePrevPage = (): void => {
-    // const totalNumberOfPages: number = Math.ceil(
-    //   currentItems.length / itemsPerPage
-    // );
-    // if (currentPage >= totalNumberOfPages && currentPage > 1) {
-    //   setCurrentPage(currentPage - 1);
-    // }
     setCurrentPage(currentPage - 1);
   };
 
@@ -68,9 +62,6 @@ const HomePage: React.FC = () => {
   };
 
   const manageEditModal = () => {
-    details.setUserName(currentItems[overlay.index].name);
-    // setUserEmail(currentItems[overlay.index].email);
-    // setUserCity(currentItems[overlay.index].address.city);
     overlay.setEditModal(!overlay.editModal);
   };
 
@@ -93,9 +84,10 @@ const HomePage: React.FC = () => {
   // -----Edit user --------------
 
   const handleSubmit = async (index: number) => {
+    const arrindex = currentPage === 1 ? index : index + 5;
     const updatedUsers: User[] = await Promise.all(
       usersData.map(async (user) => {
-        if (user.name === currentItems[index].name) {
+        if (user.name === currentItems[arrindex].name) {
           const updatedAddress = user.address
             ? { ...user.address, city: details.userCity }
             : { city: userCity };
