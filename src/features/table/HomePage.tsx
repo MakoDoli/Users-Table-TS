@@ -21,11 +21,41 @@ const API_URL = "https://jsonplaceholder.typicode.com/users";
 const HomePage: React.FC = () => {
   const overlay = useContext(OverlayContext);
   const details = useContext(UserContext);
+
   const [usersData, setUsersData] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [userName, setUserName] = useState<string>("");
+  //const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
   const [userCity, setUserCity] = useState<string>("");
+
+  // ------- Pagination -----------------
+
+  const itemsPerPage: number = 5;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const startIndex: number = (currentPage - 1) * itemsPerPage;
+  const endIndex: number = startIndex + itemsPerPage;
+  const currentItems: User[] = usersData.slice(startIndex, endIndex);
+
+  const handleNextPage = (): void => {
+    const totalNumberOfPages: number = Math.ceil(
+      currentItems.length / itemsPerPage
+    );
+    if (currentPage <= totalNumberOfPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const handlePrevPage = (): void => {
+    // const totalNumberOfPages: number = Math.ceil(
+    //   currentItems.length / itemsPerPage
+    // );
+    // if (currentPage >= totalNumberOfPages && currentPage > 1) {
+    //   setCurrentPage(currentPage - 1);
+    // }
+    setCurrentPage(currentPage - 1);
+  };
+
+  // ------- Manage overlay and Modals ---------
 
   const removeOverlay = () => {
     overlay.setOverlay(false);
@@ -33,29 +63,30 @@ const HomePage: React.FC = () => {
     overlay.setEditModal(false);
   };
 
-  const manageOverlay = () => {
-    overlay.setOverlay(!overlay.overlay);
-  };
-
   const manageRemoveModal = () => {
     overlay.setRemoveModal(!overlay.removeModal);
   };
 
   const manageEditModal = () => {
+    details.setUserName(currentItems[overlay.index].name);
+    // setUserEmail(currentItems[overlay.index].email);
+    // setUserCity(currentItems[overlay.index].address.city);
     overlay.setEditModal(!overlay.editModal);
   };
 
+  // -----Edit user --------------
+
   const handleSubmit = async (index: number) => {
     const updatedUsers: User[] = await Promise.all(
-      usersData.map(async (user) => {
-        if (user.id === index + 1) {
+      currentItems.map(async (user) => {
+        if (user.name === currentItems[index].name) {
           const updatedAddress = user.address
             ? { ...user.address, city: userCity }
             : { city: userCity };
 
           const updatedUser: User = {
             ...user,
-            name: userName,
+            name: details.userName,
             email: userEmail,
             address: updatedAddress,
           };
@@ -93,31 +124,6 @@ const HomePage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const itemsPerPage: number = 5;
-  const [currentPage, setCurrentPage] = useState<number>(1);
-
-  const startIndex: number = (currentPage - 1) * itemsPerPage;
-  const endIndex: number = startIndex + itemsPerPage;
-  const currentItems: User[] = usersData.slice(startIndex, endIndex);
-
-  const handleNextPage = (): void => {
-    const totalNumberOfPages: number = Math.ceil(
-      currentItems.length / itemsPerPage
-    );
-    if (currentPage <= totalNumberOfPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-  const handlePrevPage = (): void => {
-    // const totalNumberOfPages: number = Math.ceil(
-    //   currentItems.length / itemsPerPage
-    // );
-    // if (currentPage >= totalNumberOfPages && currentPage > 1) {
-    //   setCurrentPage(currentPage - 1);
-    // }
-    setCurrentPage(currentPage - 1);
-  };
-
   useEffect(() => {
     setIsLoading(true);
     const getUsers = async () => {
@@ -125,9 +131,9 @@ const HomePage: React.FC = () => {
         const res = await fetch(API_URL);
         const data = await res.json();
         setUsersData(data);
-        setUserName(data[overlay.index].name);
-        setUserEmail(data[overlay.index].email);
-        setUserCity(data[overlay.index].address.city);
+        // setUserName(data[overlay.index].name);
+        // setUserEmail(data[overlay.index].email);
+        // setUserCity(data[overlay.index].address.city);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -136,10 +142,11 @@ const HomePage: React.FC = () => {
     };
 
     getUsers();
-  }, [overlay.index]);
+  }, []);
 
   if (isLoading) return <Spinner />;
-
+  console.log(currentItems);
+  console.log(overlay.index);
   return (
     <>
       <Overlay handleClick={removeOverlay} />
@@ -177,14 +184,12 @@ const HomePage: React.FC = () => {
                       if (currentPage === 1) overlay.setIndex(index);
                       if (currentPage === 2) overlay.setIndex(index + 5);
                     }}
-                    handleClick={manageOverlay}
                     manageModal={manageRemoveModal}
                   >
                     Remove
                   </Buttons>
 
                   <Buttons
-                    handleClick={manageOverlay}
                     manageModal={manageEditModal}
                     handleRemove={() => {
                       if (currentPage === 1) overlay.setIndex(index);
@@ -200,29 +205,16 @@ const HomePage: React.FC = () => {
         </tbody>
       </table>
       <div className="space-x-[510px]">
-        <Buttons
-          handleClick={handleNextPage}
-          manageModal={() => {}}
-          handleRemove={() => {}}
-        >
-          Next page
-        </Buttons>
+        <Button onClick={handleNextPage}>Next page</Button>
 
         {currentPage > 1 ? (
-          <Buttons
-            handleClick={handlePrevPage}
-            manageModal={() => {}}
-            handleRemove={() => {}}
-          >
-            Previous page
-          </Buttons>
+          <Button onClick={handlePrevPage}>Previous page</Button>
         ) : (
           ""
         )}
       </div>
       {overlay.removeModal && overlay.overlay ? (
         <Modal
-          handleClick={manageOverlay}
           manageModal={manageRemoveModal}
           handleRemove={() => {
             const newList = [...usersData];
@@ -240,8 +232,8 @@ const HomePage: React.FC = () => {
             <input
               className="bg-slate-200 rounded-sm pl-2 mt-2 py-1"
               type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={details.userName}
+              onChange={(e) => details.setUserName(e.target.value)}
             />
           </label>
           <label>

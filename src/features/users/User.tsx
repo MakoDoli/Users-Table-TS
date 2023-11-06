@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "../ui/Buttons";
+
 import Spinner from "../ui/Spinner";
 import { UserContext } from "../contexts/UserContext";
+import { Button } from "@/components/ui/button";
 
 interface Address {
   street: string;
@@ -67,13 +68,7 @@ const User: React.FC = () => {
           <p>{userAddress}</p>
           <p>{details.edited ? details.userCity : city}</p>
           <div className="flex justify-end mt-4">
-            <Button
-              handleClick={() => navigate("/")}
-              manageModal={() => {}}
-              handleRemove={() => {}}
-            >
-              Back to table
-            </Button>
+            <Button onClick={() => navigate("/")}>Back to table</Button>
           </div>
         </div>
       </div>
