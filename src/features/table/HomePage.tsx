@@ -24,9 +24,6 @@ const HomePage: React.FC = () => {
 
   const [usersData, setUsersData] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [userName, setUserName] = useState<string>("");
-  // const [userEmail, setUserEmail] = useState<string>("");
-  //const [userCity, setUserCity] = useState<string>("");
 
   // ------- Pagination -----------------
 
@@ -69,7 +66,7 @@ const HomePage: React.FC = () => {
 
   const initialUser = async (id: number) => {
     const URL_USER = `${API_URL}/${id}`;
-    console.log(URL_USER);
+
     try {
       const res = await fetch(URL_USER);
       const data = await res.json();
@@ -84,7 +81,6 @@ const HomePage: React.FC = () => {
   // -----Edit user --------------
 
   const handleSubmit = async (index: number) => {
-    console.log("index=:" + index);
     const arrindex = currentPage === 1 ? index : index - 5;
     const updatedUsers: User[] = await Promise.all(
       usersData.map(async (user) => {
@@ -130,7 +126,7 @@ const HomePage: React.FC = () => {
     overlay.setOverlay(!overlay.overlay);
     details.setEdited(true);
   };
-
+  // --------------------------------//
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -140,9 +136,6 @@ const HomePage: React.FC = () => {
         const res = await fetch(API_URL);
         const data = await res.json();
         setUsersData(data);
-        // setUserName(data[overlay.index].name);
-        // setUserEmail(data[overlay.index].email);
-        // setUserCity(data[overlay.index].address.city);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -154,9 +147,6 @@ const HomePage: React.FC = () => {
   }, []);
 
   if (isLoading) return <Spinner />;
-  console.log(currentItems);
-  console.log(overlay.index);
-  console.log(details.edited);
 
   return (
     <>
