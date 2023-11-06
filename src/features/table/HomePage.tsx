@@ -84,7 +84,8 @@ const HomePage: React.FC = () => {
   // -----Edit user --------------
 
   const handleSubmit = async (index: number) => {
-    const arrindex = currentPage === 1 ? index : index + 5;
+    console.log("index=:" + index);
+    const arrindex = currentPage === 1 ? index : index - 5;
     const updatedUsers: User[] = await Promise.all(
       usersData.map(async (user) => {
         if (user.name === currentItems[arrindex].name) {
